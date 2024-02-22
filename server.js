@@ -17,14 +17,16 @@ app.use(express.urlencoded({extended: true}))
 /****************/
 /*** Import des modules de routage */
 const user_router = require('./routes/users')
+const technique_router = require('./routes/techniques')
 
 /****************/
 /*** Mise en place du routage */
 app.get('/', (req, res) => res.send(`I'm online. All is OK !`))
 
-app.get('*', (req, res) => res.status(501).send(`What the hell are you doing !?!`))
-
 app.use('/users', user_router)
+app.use('/techniques', technique_router)
+
+app.get('*', (req, res) => res.status(501).send(`What the hell are you doing !?!`))
 
 /****************/
 /*** Start serveur avec test DB */

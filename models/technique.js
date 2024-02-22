@@ -62,4 +62,10 @@ const Technique = DB.define('Technique', {
     }
 }, {paranoid: true})              // Ici pour faire du softDelete
 
+/****************/
+/*** Synchronisation du modèle */
+// Technique.sync()
+// Technique.sync({force: true})
+// Technique.sync({alter: true})
+
 module.exports = Technique
