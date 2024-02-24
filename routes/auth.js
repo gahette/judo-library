@@ -48,3 +48,4 @@ router.post('/login', (req, res) => {
         .catch(err => res.status(500).json({message: 'Database Error', error: err}))
 })
 
+module.exports = router

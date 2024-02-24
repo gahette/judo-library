@@ -19,12 +19,16 @@ app.use(express.urlencoded({extended: true}))
 const user_router = require('./routes/users')
 const technique_router = require('./routes/techniques')
 
+const auth_router = require('./routes/auth')
+
 /****************/
 /*** Mise en place du routage */
 app.get('/', (req, res) => res.send(`I'm online. All is OK !`))
 
 app.use('/users', user_router)
 app.use('/techniques', technique_router)
+
+app.use('/auth', auth_router)
 
 app.get('*', (req, res) => res.status(501).send(`What the hell are you doing !?!`))
 
