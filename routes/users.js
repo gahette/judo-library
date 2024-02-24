@@ -78,7 +78,7 @@ router.patch('/:id', (req, res) => {
     // Recherche de l'utilisateur
     User.findOne({where: {id: userId}, raw: true})
         .then(user => {
-            // Vérifier si utilisateur existe
+            // Vérifier si l'utilisateur existe
             if (user === null) {
                 return res.status(404).json({message: `This user does not exist !`})
             }
