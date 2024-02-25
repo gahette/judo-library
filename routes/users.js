@@ -10,8 +10,16 @@ const User = require('../models/user')
 let router = express.Router()
 
 /****************/
+/*** Middleware pour logger dates de requêtes */
+router.use((req, res, next) => {
+    const event = new Date()
+    console.log('User Time:', event.toString())
+    next()
+})
+
+/****************/
 /*** Routage de la ressource User */
-router.get('', (req, res) => {
+router.get('',(req, res) => {
     User.findAll()
         .then(users => res.json({data: users}))
         .catch(err => res.status(500).json({message: 'Database Error', error: err}))

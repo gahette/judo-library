@@ -11,6 +11,14 @@ const User = require('../models/user')
 let router = express.Router()
 
 /****************/
+/*** Middleware pour logger dates de requêtes */
+router.use((req, res, next)=>{
+    const event = new Date()
+    console.log('AUTH Time:', event.toString())
+    next()
+})
+
+/****************/
 /*** Routage de la resource Auth */
 router.post('/login', (req, res) => {
     const {email, password} = req.body

@@ -2,6 +2,7 @@
 /*** Import des modules nécessaires */
 const express = require('express')
 const cors = require('cors')
+const checkTokenMiddleware = require('./jsonwebtoken/check')
 
 /*** Import de la connexion à la DB */
 let DB = require('./db.config')
@@ -25,7 +26,7 @@ const auth_router = require('./routes/auth')
 /*** Mise en place du routage */
 app.get('/', (req, res) => res.send(`I'm online. All is OK !`))
 
-app.use('/users', user_router)
+app.use('/users', checkTokenMiddleware, user_router)
 app.use('/techniques', technique_router)
 
 app.use('/auth', auth_router)
