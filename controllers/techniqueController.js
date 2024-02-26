@@ -3,7 +3,6 @@
 /************************************/
 
 const Technique = require('../models/technique')
-const checkTokenMiddleware = require("../jsonwebtoken/check");
 
 
 /***************************************/
@@ -16,7 +15,7 @@ exports.getAllTechnique = (req, res) => {
         .catch(err => res.status(500).json({message: 'Database Error', error: err}))
 }
 
-exports.getTechnique = (req, res) => {
+exports.getTechnique = async (req, res) => {
     let techniqueId = parseInt(req.params.id)
 
     // Vérification si le champ id est présent et cohérent
@@ -24,20 +23,25 @@ exports.getTechnique = (req, res) => {
         return res.json(400).json({message: 'Missing Parameter'})
     }
 
-    // Récupération de la technique
-    Technique.findOne({where: {id: techniqueId}, raw: true})
-        .then(technique => {
-            if (technique === null) {
-                return res.status(404).json({message: 'This technique does not exist !'})
-            }
+    try {
 
-            // Technique trouvée
-            return res.json({data: technique})
-        })
-        .catch(err => res.status(500).json({message: 'Database Error', error: err}))
+        // Récupération de la technique
+        let technique = await Technique.findOne({where: {id: techniqueId}, raw: true})
+
+        // Test si résultat
+        if (technique === null) {
+            return res.status(404).json({message: 'This technique does not exist !'})
+        }
+
+        // Technique trouvée
+        return res.json({data: technique})
+    } catch
+        (err) {
+        return res.status(500).json({message: 'Database Error', error: err})
+    }
 }
 
-exports.addTechnique = (req, res) => {
+exports.addTechnique = async (req, res) => {
     const {
         user_id,
         name,
@@ -55,22 +59,22 @@ exports.addTechnique = (req, res) => {
         return res.status(400).json({message: 'Missing Data'})
     }
 
-    Technique.findOne({where: {name: name}, raw: true})
-        .then(technique => {
-            // Vérification si la technique existe déjà
-            if (technique !== null) {
-                return res.status(409).json({message: `The technique  ${name} already exists !`})
-            }
+    try {
+        // Vérification si la technique existe déjà
+        let technique = await Technique.findOne({where: {name: name}, raw: true})
+        if (technique !== null) {
+            return res.status(409).json({message: `The technique  ${name} already exists !`})
+        }
 
-            // Création de la technique
-            Technique.create(req.body)
-                .then(technique => res.json({message: `Technique Created`, data: technique}))
-                .catch(err => res.status(500).json({message: `Database Error`, error: err}))
-        })
-        .catch(err => res.status(500).json({message: `Hash Process Error`, error: err}))
+        // Création de la technique
+        technique = await Technique.create(req.body)
+        return res.json({message: `Technique Created`, data: technique})
+    }catch (err){
+        return res.status(500).json({message: 'Database Error', error: err})
+    }
 }
 
-exports.updateTechnique = (req, res) => {
+exports.updateTechnique = async (req, res) => {
     let techniqueId = parseInt(req.params.id)
 
     // Vérification si le champ id est présent et cohérent
@@ -78,20 +82,19 @@ exports.updateTechnique = (req, res) => {
         return res.status(400).json({message: `Missing parameter`})
     }
 
-    // Recherche de la technique
-    Technique.findOne({where: {id: techniqueId}, raw: true})
-        .then(technique => {
-            // Vérifier si la technique existe
-            if (technique === null) {
-                return res.status(404).json({message: `This technique does not exist !`})
-            }
-
-            // Mise à jour de la technique
-            Technique.update(req.body, {where: {id: techniqueId}})
-                .then(technique => res.json({message: `Technique Updated`}))
-                .catch(err => res.status(500).json({message: `Database Error`, error: err}))
-        })
-        .catch(err => res.status(500).json({message: `Database Error`, error: err}))
+    try {
+        // Recherche de la technique
+        let technique = await Technique.findOne({where: {id: techniqueId}, raw: true})
+        // Vérifier si la technique existe
+        if (technique === null) {
+            return res.status(404).json({message: `This technique does not exist !`})
+        }
+        // Mise à jour de la technique
+        technique = await Technique.update(req.body, {where: {id: techniqueId}})
+        return res.json({message: `Technique Updated`})
+    } catch (err) {
+        return res.status(500).json({message: `Database Error`, error: err})
+    }
 }
 
 exports.untrashTechnique = (req, res) => {
