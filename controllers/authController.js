@@ -30,7 +30,8 @@ exports.login = async (req, res, next) => {
         }
 
         // Vérification du mot de passe
-        let test = await bcrypt.compare(password, user.password)
+        // let test = await bcrypt.compare(password, user.password)
+        let test = await User.checkPassword(password, user.password)
         if (!test) {
             throw new AuthenticationError('Wrong password', 2)
         }

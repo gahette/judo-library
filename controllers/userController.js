@@ -58,7 +58,7 @@ exports.addUser = async (req, res, next) => {
         }
 
         // Hachage du mot de passe utilisateur
-        req.body.password = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
+        // req.body.password = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
 
         // Création de l'utilisateur
         user = await User.create(req.body)
