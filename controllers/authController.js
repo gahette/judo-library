@@ -7,30 +7,32 @@ const jwt = require('jsonwebtoken')
 
 const User = require('../models/user')
 
+const {AuthenticationError} = require('../error/customError')
+
 
 /*********************************/
 /*** Routage de la resource Auth */
 /*********************************/
 
-exports.login = async (req, res) => {
-    const {email, password} = req.body
-
-    //Validation des données reçues
-    if (!email || !password) {
-        return res.status(400).json({message: 'Bad email or password'})
-    }
-
+exports.login = async (req, res, next) => {
     try {
+        const {email, password} = req.body
+
+        //Validation des données reçues
+        if (!email || !password) {
+            throw new AuthenticationError('Bad email or password', 0)
+        }
+
         //Vérification si l'utilisateur existe
         let user = await User.findOne({where: {email: email}, raw: true})
         if (user === null) {
-            return res.status(401).json({message: 'This account does not exist !'})
+            throw new AuthenticationError('This account does not exist !', 1)
         }
 
         // Vérification du mot de passe
         let test = await bcrypt.compare(password, user.password)
         if (!test) {
-            return res.status(401).json({message: 'Wrong password'})
+            throw new AuthenticationError('Wrong password', 2)
         }
 
         // Génération du token et envoie
@@ -42,9 +44,10 @@ exports.login = async (req, res) => {
         }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_DURING})
         return res.json({access_token: token})
     } catch (err) {
-        if(err.name === 'SequelizeDatabaseError'){
-            return res.status(500).json({message: 'Database Error', error: err})
-        }
-        return res.status(500).json({message: 'Login process failed', error: err})
+        next(err)
+        // if(err.name === 'SequelizeDatabaseError'){
+        //     return res.status(500).json({message: 'Database Error', error: err})
+        // }
+        // return res.status(500).json({message: 'Login process failed', error: err})
     }
 }
