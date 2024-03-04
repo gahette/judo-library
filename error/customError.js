@@ -1,3 +1,5 @@
+// noinspection JSIncompatibleTypesComparison
+
 class MainError extends Error {
 
     constructor(errorMessage, errorType = '') {

@@ -1,17 +1,16 @@
 /************************************/
 /*** Import des modules nécessaires */
 /************************************/
-
-const bcrypt = require('bcrypt')
+// noinspection ExceptionCaughtLocallyJS,JSCheckFunctionSignatures
 
 const User = require('../models/user')
 
 const {RequestError, UserError} = require('../error/customError')
 
+
 /**********************************/
 /*** Routage de la ressource User */
 /**********************************/
-
 exports.getAllUsers = (req, res, next) => {
     User.findAll()
         .then(users => res.json({data: users}))
@@ -56,9 +55,6 @@ exports.addUser = async (req, res, next) => {
         if (user !== null) {
             throw new UserError(`The user ${lastName} already exists !`, 1)
         }
-
-        // Hachage du mot de passe utilisateur
-        // req.body.password = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
 
         // Création de l'utilisateur
         user = await User.create(req.body)
@@ -148,9 +144,8 @@ exports.deleteUser = async (req, res, next) => {
 
         // Suppression de l'utilisateur
         await User.destroy({where: {id: userId}, force: true})
-        return res.status(204).json({})
+        return res.status(204).json({message: 'User is deleted'})
     } catch (err) {
         next(err)
     }
-
 }

@@ -1,9 +1,11 @@
 /************************************/
 /*** Import des modules nécessaires */
 /************************************/
+// noinspection ExceptionCaughtLocallyJS,JSCheckFunctionSignatures
 
 const Technique = require('../models/technique')
 const {RequestError, TechniqueError} = require('../error/customError')
+
 
 /***************************************/
 /*** Routage de la ressource Technique */
@@ -43,7 +45,18 @@ exports.getTechnique = async (req, res, next) => {
 
 exports.addTechnique = async (req, res, next) => {
     try {
-        const {user_id, name, group, subGroup, family, kyuGoKyoNoWaza, goKyoNoWaza, description, image, youtubeId} = req.body
+        const {
+            user_id,
+            name,
+            group,
+            subGroup,
+            family,
+            kyuGoKyoNoWaza,
+            goKyoNoWaza,
+            description,
+            image,
+            youtubeId
+        } = req.body
 
         // Validation des données reçues
         if (!user_id || !name || !group || !subGroup || !family || !kyuGoKyoNoWaza || !goKyoNoWaza || !description || !image || !youtubeId) {
@@ -59,7 +72,7 @@ exports.addTechnique = async (req, res, next) => {
         // Création de la technique
         technique = await Technique.create(req.body)
 
-        // Réponse de la technique créé
+        // Réponse de la technique créée
         return res.json({message: `Technique Created`, data: technique})
     } catch (err) {
         next(err)

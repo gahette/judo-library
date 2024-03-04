@@ -50,11 +50,6 @@ const Technique = DB.define('Technique', {
         defaultValue: '',
         allowNull: true
     },
-    image: {
-       type: DataTypes.STRING,
-       defaultValue: '',
-       allowNull: true
-    },
     youtubeId: {
         type: DataTypes.STRING,
         defaultValue: '',

@@ -10,7 +10,6 @@ const bcrypt = require("bcrypt");
 /*******************************/
 /*** Définition du modèle User */
 /*******************************/
-
 const User = DB.define('User', {
     id: {
         type: DataTypes.INTEGER,
