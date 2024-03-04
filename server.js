@@ -74,9 +74,9 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Connexion utilisateur
+ *     summary: Log In the user.
  *     tags:
- *      - Auth Module
+ *       - Auth Module
  *     requestBody:
  *       required: true
  *       content:
@@ -90,14 +90,14 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *               email:
  *                 type: string
  *                 format: email
- *                 description: Adresse email de l'utilisateur.
+ *                 description: User email address.
  *               password:
  *                 type: string
  *                 format: password
- *                 description: Mot de passe de l'utilisateur.
+ *                 description: User password.
  *     responses:
  *       '200':
- *         description: Connexion réussie. Retourne le token d'accès.
+ *         description: Connected.
  *         content:
  *           application/json:
  *             schema:
@@ -105,21 +105,28 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *               properties:
  *                 access_token:
  *                   type: string
- *                   description: "JWT token d'accès."
+ *                   description: "JWT access token"
+ *       '400':
+ *         description: Bad email or password.
+ *       '401':
+ *         description: Not Authorized.
+ *       '500':
+ *         description: Internal Error.
  */
+
 
 /**
  * @swagger
  * /users:
  *   get:
- *     summary: Récupérer tous les utilisateurs.
+ *     summary: Get all users from BDD.
  *     tags:
  *      - User Module
  *     security:
  *      - bearerAuth: []
  *     responses:
  *       '200':
- *         description: Succès. Retourne la liste des utilisateurs.
+ *         description: Return an array of all users.
  *         content:
  *           application/json:
  *             schema:
@@ -145,13 +152,15 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *                                      type: string
  *                                  password:
  *                                      type: string
+ *       '500':
+ *         description: Internal Error.
  */
 
 /**
  * @swagger
  * /users:
  *   put:
- *     summary: Créer un utilisateur.
+ *     summary: Create new user in BDD.
  *     tags:
  *      - User Module
  *     requestBody:
@@ -180,17 +189,17 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *                 type: string
  *                 example: martin@dupont.com
  *                 format: email
- *                 description: Adresse email de l'utilisateur.
+ *                 description: User email address.
  *               password:
  *                 type: string
  *                 example: martin
  *                 format: password
- *                 description: Mot de passe de l'utilisateur.
+ *                 description: User password.
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       '200':
- *         description: Succès. Retourne la création de l'utilisateur.
+ *         description: Return object with the new user informations.
  *         content:
  *           application/json:
  *             schema:
@@ -222,28 +231,33 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *                           password:
  *                             example: $2y$10$fCx3TihgTRhT.vqw/u9qDuHJr8w2KEe.YHgitZ7aV5vLoChqiTaYK
  *                             type: string
+ *       '400':
+ *         description: Missing Data.
+ *       '409':
+ *         description: User already exists.
+ *       '500':
+ *         description: Internal Error.
  */
 
 /**
  * @swagger
  * /users/{id}:
  *   get:
- *     summary: Récupérer un utilisateurs.
+ *     summary: Get one user by ID.
  *     tags:
  *     - User Module
- *     description: Succès. Retourne l'utilisateurs.
  *     parameters:
  *          - in: path
  *            name: id
  *            required: true
- *            description: Identifiant requis
+ *            description: User ID.
  *            schema:
  *              type: integer
  *     security:
  *      - bearerAuth: []
  *     responses:
  *       '200':
- *         description: Succès. Retourne l'utilisateurs.
+ *         description: User.
  *         content:
  *           application/json:
  *             schema:
@@ -269,20 +283,26 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *                                      type: string
  *                                  password:
  *                                      type: string
+ *       '400':
+ *         description: Missing parameter.
+ *       '404':
+ *         description: User not exist.
+ *       '500':
+ *         description: Internal Error.
  */
 
 /**
  * @swagger
  * /users/{id}:
  *   patch:
- *     summary: mettre à jour un utilisateur.
+ *     summary: Modify User.
  *     tags:
  *      - User Module
  *     parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: Identifiant requis
+ *        description: Id of user.
  *        schema:
  *          type: integer
  *     requestBody:
@@ -321,73 +341,82 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *       - bearerAuth: []
  *     responses:
  *       '200':
- *         description: Succès. Mise à jour de l'utilisateur.
+ *         description: User updated.
  */
 
 /**
  * @swagger
  * /users/{id}:
  *   delete:
- *     summary: Supprimer un utilisateurs.
+ *     summary: Delete one user.
  *     tags:
  *      - User Module
- *     description: Succès. Retourne l'utilisateurs.
  *     parameters:
  *          - in: path
  *            name: id
  *            required: true
- *            description: Identifiant requis
+ *            description: User ID to delete.
  *            schema:
  *              type: integer
  *     security:
  *      - bearerAuth: []
  *     responses:
  *       '204':
- *         description: Succès. L'utilisateur est supprimé.
+ *         description: User deleted.
+ *       '400':
+ *         description: Missing parameter.
+ *       '500':
+ *         description: Internal Error.
  */
 
 /**
  * @swagger
  * /users/trash/{id}:
  *   delete:
- *     summary: Mettre à la poubelle un utilisateurs.
+ *     summary: Trash one user.
  *     tags:
  *      - User Module
- *     description: Succès. Retourne l'utilisateurs.
  *     parameters:
  *          - in: path
  *            name: id
  *            required: true
- *            description: Identifiant requis
+ *            description: User ID trash.
  *            schema:
  *              type: integer
  *     security:
  *      - bearerAuth: []
  *     responses:
  *       '204':
- *         description: Succès. L'utilisateur est mis à la poubelle.
+ *         description: User trashed.
+ *       '400':
+ *         description: Missing parameter.
+ *       '500':
+ *         description: Internal Error.
  */
 
 /**
  * @swagger
  * /users/untrash/{id}:
  *   post:
- *     summary: Sortir de la poubelle un utilisateurs.
+ *     summary: Untrash one user.
  *     tags:
  *      - User Module
- *     description: Succès. Retourne l'utilisateurs.
  *     parameters:
  *          - in: path
  *            name: id
  *            required: true
- *            description: Identifiant requis
+ *            description: User ID to untrash.
  *            schema:
  *              type: integer
  *     security:
  *      - bearerAuth: []
  *     responses:
  *       '204':
- *         description: Succès. L'utilisateur est sorti à la poubelle.
+ *         description: User untrashed.
+ *       '400':
+ *         description: Missing parameter
+ *       '500':
+ *         description: Internal Error
  */
 
 /***********************************/
