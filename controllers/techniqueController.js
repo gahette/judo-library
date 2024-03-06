@@ -54,12 +54,11 @@ exports.addTechnique = async (req, res, next) => {
             kyuGoKyoNoWaza,
             goKyoNoWaza,
             description,
-            image,
             youtubeId
         } = req.body
 
         // Validation des données reçues
-        if (!user_id || !name || !group || !subGroup || !family || !kyuGoKyoNoWaza || !goKyoNoWaza || !description || !image || !youtubeId) {
+        if (!user_id || !name || !group || !subGroup || !family || !kyuGoKyoNoWaza || !goKyoNoWaza || !description || !youtubeId) {
             throw new RequestError('Missing parameter')
         }
 

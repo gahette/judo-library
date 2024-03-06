@@ -7,9 +7,9 @@ const express = require('express')
 const cors = require('cors')
 const checkTokenMiddleware = require('./jsonwebtoken/check')
 const errorHandler = require('./error/errorHandler')
-
-const swaggerJsDoc = require('swagger-jsdoc')
+const { swaggerDocs, swaggerUiOptions } = require('./swagger');
 const swaggerUI = require('swagger-ui-express')
+
 
 /************************************/
 /*** Import de la connexion à la DB */
@@ -30,45 +30,6 @@ app.use(cors({
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-
-/****************************************************/
-/*** Mise en place de la documentation avec swagger */
-/****************************************************/
-
-const swaggerOptions = {
-    swaggerDefinition: {
-        openapi: '3.0.0',
-        info: {
-            title: "API sur les techniques de Judo",
-            version: "1.0.0"
-        },
-        // servers: [
-        //     {
-        //         url: `http://${process.env.DB_HOST}:${process.env.SERVER_PORT}/`
-        //     }
-        // ],
-        components: {
-            securitySchemes: {
-                bearerAuth: {
-                    type: 'http',
-                    scheme: 'bearer',
-                    bearerFormat: 'JWT',
-                },
-            },
-        },
-        security: {
-            bearerAuth: [],
-        },
-    },
-    apis: ["./routes/*.js", "server.js"]
-}
-
-const swaggerUiOptions = {
-    explorer: true
-};
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions)
-// console.log(swaggerDocs)
 
 /**
  * @swagger
@@ -302,7 +263,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *      - in: path
  *        name: id
  *        required: true
- *        description: Id of user.
+ *        description: User ID.
  *        schema:
  *          type: integer
  *     requestBody:
@@ -413,6 +374,358 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions)
  *     responses:
  *       '204':
  *         description: User untrashed.
+ *       '400':
+ *         description: Missing parameter
+ *       '500':
+ *         description: Internal Error
+ */
+
+/**
+ * @swagger
+ * /techniques:
+ *   get:
+ *     summary: Get all techniques from BDD.
+ *     tags:
+ *      - Technique Module
+ *     responses:
+ *       '200':
+ *         description: Return an array of all techniques.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                      type: object
+ *                      properties:
+ *                          technique:
+ *                              type: object
+ *                              properties:
+ *                                  id:
+ *                                      type: integer
+ *                                  user_id:
+ *                                      type: integer
+ *                                  name:
+ *                                      type: string
+ *                                  group:
+ *                                      type: string
+ *                                  subgroup:
+ *                                      type: string
+ *                                  family:
+ *                                      type: string
+ *                                  kyuGoKyoNoWaza:
+ *                                      type: string
+ *                                  goKyoNoWaza:
+ *                                      type: string
+ *                                  description:
+ *                                      type: text
+ *                                  youtubeId:
+ *                                      type: string
+ *       '500':
+ *         description: Internal Error.
+ */
+
+/**
+ * @swagger
+ * /techniques:
+ *   put:
+ *     summary: Create new technique in BDD.
+ *     tags:
+ *      - Technique Module
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - user_id
+ *               - name
+ *               - group
+ *               - subGroup
+ *               - family
+ *               - kyuGoKyoNoWaza
+ *               - goKyoNoWaza
+ *               - description
+ *               - youtubeId
+ *             properties:
+ *               user_id:
+ *                 type: integer
+ *                 example: 1
+ *               name:
+ *                 type: string
+ *                 example: Seoi
+ *               group:
+ *                 type: string
+ *                 example: Nage-Waza
+ *               subGroup:
+ *                 type: string
+ *                 example: Tachi-Waza
+ *               family:
+ *                  type: string
+ *                  example: Te-Waza
+ *               kyuGoKyoNoWaza:
+ *                 type: string
+ *                 example: ikkyo
+ *               goKyoNoWaza:
+ *                  type: string
+ *                  example: ikkyo
+ *               description:
+ *                  type: text
+ *                  example: lorem ipsum
+ *               youtubeId:
+ *                  type: string
+ *                  example: gygughiguyg
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Return object with the new technique informations.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       technique:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             example: 1
+ *                             type: integer
+ *                           user_id:
+ *                             example: 1
+ *                             type: integer
+ *                           name:
+ *                             example: Seoi
+ *                             type: string
+ *                           group:
+ *                             example: Nage-Waza
+ *                             type: string
+ *                           subGroup:
+ *                             example: Tachi-Waza
+ *                             type: string
+ *                           family:
+ *                             example: Te-Waza
+ *                             type: string
+ *                           kyuGoKyoNoWaza:
+ *                              example: ikkyo
+ *                              type: string
+ *                           goKyoNoWaza:
+ *                              example: ikkyo
+ *                              type: string
+ *                           description:
+ *                              example: lorem ipsum
+ *                              type: text
+ *                           youtubeId:
+ *                              example: gygughiguyg
+ *                              type: string
+ *       '400':
+ *         description: Missing Data.
+ *       '409':
+ *         description: User already exists.
+ *       '500':
+ *         description: Internal Error.
+ */
+
+/**
+ * @swagger
+ * /techniques/{id}:
+ *   get:
+ *     summary: Get one technique by ID.
+ *     tags:
+ *      - Technique Module
+ *     parameters:
+ *          - in: path
+ *            name: id
+ *            required: true
+ *            description: Technique ID.
+ *            schema:
+ *              type: integer
+ *     responses:
+ *       '200':
+ *         description: Technique.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                      type: object
+ *                      properties:
+ *                          technique:
+ *                              type: object
+ *                              properties:
+ *                                  id:
+ *                                      type: integer
+ *                                  user_id:
+ *                                      type: integer
+ *                                  name:
+ *                                      type: string
+ *                                  group:
+ *                                      type: string
+ *                                  subgroup:
+ *                                      type: string
+ *                                  family:
+ *                                      type: string
+ *                                  kyuGoKyoNoWaza:
+ *                                      type: string
+ *                                  goKyoNoWaza:
+ *                                      type: string
+ *                                  description:
+ *                                      type: text
+ *                                  youtubeId:
+ *                                      type: string
+ *       '400':
+ *         description: Missing parameter.
+ *       '404':
+ *         description: Technique not exist.
+ *       '500':
+ *         description: Internal Error.
+ */
+
+/**
+ * @swagger
+ * /techniques/{id}:
+ *   patch:
+ *     summary: Modify Technique.
+ *     tags:
+ *      - Technique Module
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: Technique ID.
+ *        schema:
+ *          type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - user_id
+ *               - name
+ *               - group
+ *               - subGroup
+ *               - family
+ *               - kyuGoKyoNoWaza
+ *               - goKyoNoWaza
+ *               - description
+ *               - youtubeId
+ *             properties:
+ *               user_id:
+ *                 type: integer
+ *                 example: 1
+ *               name:
+ *                 type: string
+ *                 example: Seoi
+ *               group:
+ *                 type: string
+ *                 example: Nage-Waza
+ *               subGroup:
+ *                 type: string
+ *                 example: Tachi-Waza
+ *               family:
+ *                 type: string
+ *                 example: Te-Waza
+ *               kyuGoKyoNoWaza:
+ *                  type: string
+ *                  example: ikkyo
+ *               goKyoNoWaza:
+ *                  type: string
+ *                  example: ikkyo
+ *               description:
+ *                  type: text
+ *                  example: lorem ipsum
+ *               youtubeId:
+ *                  type: string
+ *                  example: gghhggiii
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User updated.
+ */
+
+/**
+ * @swagger
+ * /techniques/{id}:
+ *   delete:
+ *     summary: Delete one technique.
+ *     tags:
+ *      - Technique Module
+ *     parameters:
+ *          - in: path
+ *            name: id
+ *            required: true
+ *            description: Technique ID to delete.
+ *            schema:
+ *              type: integer
+ *     security:
+ *      - bearerAuth: []
+ *     responses:
+ *       '204':
+ *         description: Technique deleted.
+ *       '400':
+ *         description: Missing parameter.
+ *       '500':
+ *         description: Internal Error.
+ */
+
+/**
+ * @swagger
+ * /techniques/trash/{id}:
+ *   delete:
+ *     summary: Trash one technique.
+ *     tags:
+ *      - Technique Module
+ *     parameters:
+ *          - in: path
+ *            name: id
+ *            required: true
+ *            description: Technique ID trash.
+ *            schema:
+ *              type: integer
+ *     security:
+ *      - bearerAuth: []
+ *     responses:
+ *       '204':
+ *         description: Technique trashed.
+ *       '400':
+ *         description: Missing parameter.
+ *       '500':
+ *         description: Internal Error.
+ */
+
+/**
+ * @swagger
+ * /techniques/untrash/{id}:
+ *   post:
+ *     summary: Untrash one technique.
+ *     tags:
+ *      - Technique Module
+ *     parameters:
+ *          - in: path
+ *            name: id
+ *            required: true
+ *            description: Technique ID to untrash.
+ *            schema:
+ *              type: integer
+ *     security:
+ *      - bearerAuth: []
+ *     responses:
+ *       '204':
+ *         description: Technique untrashed.
  *       '400':
  *         description: Missing parameter
  *       '500':
