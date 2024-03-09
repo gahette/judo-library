@@ -4,6 +4,7 @@
 // noinspection JSCheckFunctionSignatures
 
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const checkTokenMiddleware = require("./jsonwebtoken/check");
 const errorHandler = require("./error/errorHandler");
@@ -33,6 +34,11 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+/*****************************************************/
+/*** Définition du dossier des fichiers statiques */
+/*****************************************************/
+app.use(express.static(path.join(__dirname, "public")));
+
 /***********************************/
 /*** Import des modules de routage */
 /***********************************/
@@ -47,7 +53,9 @@ const auth_router = require("./routes/auth");
 // app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs, swaggerUiOptions))
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerJSDocs));
 
-app.get("/", (_req, res) => res.send(`I'm online. All is OK !`));
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 app.use("/users", checkTokenMiddleware, user_router);
 app.use("/techniques", technique_router);
