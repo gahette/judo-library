@@ -1,0 +1,665 @@
+openapi: 3.0.0
+info:
+  title: API sur les techniques de Judo
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8888
+    description: localhost server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth Module
+      summary: Log In the user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address.
+                password:
+                  type: string
+                  format: password
+                  description: User password.
+      responses:
+        "200":
+          description: Connected.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: "JWT access token"
+        "400":
+          description: Bad email or password.
+        "401":
+          description: Not Authorised.
+        "500":
+          description: Internal Server Error.
+  /users:
+    get:
+      tags:
+        - User Module
+      summary: Get all users from BDD.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Return an array of all users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            lastName:
+                              type: string
+                            firstName:
+                              type: string
+                            pseudo:
+                              type: string
+                            email:
+                              type: string
+                            password:
+                              type: string
+        "500":
+          description: Internal Error.
+    put:
+      tags:
+        - User Module
+      summary: Create new user in BDD.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lastName
+                - firstName
+                - pseudo
+                - email
+                - password
+              properties:
+                lastName:
+                  type: string
+                  example: Dupont
+                firstName:
+                  type: string
+                  example: Martin
+                pseudo:
+                  type: string
+                  example: Kéké
+                email:
+                  type: string
+                  example: martin@dupont.com
+                  format: email
+                  description: User email address.
+                password:
+                  type: string
+                  example: martin
+                  format: password
+                  description: User password.
+      responses:
+        "200":
+          description: Return object with the new user informations.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              example: 1
+                              type: integer
+                            lastName:
+                              example: Dupont
+                              type: string
+                            firstName:
+                              example: Martin
+                              type: string
+                            pseudo:
+                              example: kéké
+                              type: string
+                            email:
+                              example: martin@dupont.com
+                              type: string
+                            password:
+                              example: $2y$10$fCx3TihgTRhT.vqw/u9qDuHJr8w2KEe.YHgitZ7aV5vLoChqiTaYK
+                              type: string
+        "400":
+          description: Missing Data.
+        "409":
+          description: User already exists.
+        "500":
+          description: Internal Error.
+
+  /users/{id}:
+    get:
+      tags:
+        - User Module
+      summary: Get one user by ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: User ID.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              lastName:
+                                type: string
+                                firstName:
+                                  type: string
+                                  pseudo:
+                                    type: string
+                                    email:
+                                      type: string
+                                      password:
+                                        type: string
+        "400":
+          description: Missing parameter.
+        "404":
+          description: User not exist.
+        "500":
+          description: Internal Server Error
+
+    patch:
+      tags:
+        - User Module
+      summary: Modify User.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: User ID.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lastName
+                - firstName
+                - pseudo
+                - email
+                - password
+              properties:
+                lastName:
+                  type: string
+                  example: Dupont
+                firstName:
+                  type: string
+                  example: Martin
+                pseudo:
+                  type: string
+                  example: Kéké
+                email:
+                  type: string
+                  example: martin@dupont.com
+                  format: email
+                  description: Adresse email de l'utilisateur.
+                password:
+                  type: string
+                  example: martin
+                  format: password
+                  description: Mot de passe de l'utilisateur.
+      responses:
+        "200":
+          description: User updated.
+
+    delete:
+      tags:
+        - User Module
+      summary: Delete one user.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: User ID to delete.
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: User deleted.
+        "400":
+          description: Missing parameter.
+        "500":
+          description: Internal Server Error.
+
+  /users/trash/{id}:
+    delete:
+      tags:
+        - User Module
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: User ID trash.
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: User trashed.
+        "400":
+          description: Missing parameter.
+        "500":
+          description: Internal Server Error.
+
+  /users/untrash/{id}:
+    post:
+      tags:
+        - User Module
+      summary: Untrash one user.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: User ID to untrash.
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: User untrashed.
+        "400":
+          descrition: Missing parameter
+        "500":
+          description: Internal Server Error.
+
+  /techniques:
+    get:
+      tags:
+        - Technique Module
+      summary: Get all techniques from BDD.
+      responses:
+        "200":
+          description: Return an array of all techniques.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        technique:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            user_id:
+                              type: integer
+                            name:
+                              type: string
+                            group:
+                              type: string
+                            subgroup:
+                              type: string
+                            family:
+                              type: string
+                            kyuGoKyoNoWaza:
+                              type: string
+                            goKyoNoWaza:
+                              type: string
+                            description:
+                              type: text
+                            youtubeId:
+                              type: string
+        "500":
+          description: Internal Server Error.
+
+    put:
+      tags:
+        - Technique Module
+      summary: Create new technique in BDD.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - name
+                - group
+                - subGroup
+                - family
+                - kyuGoKyoNoWaza
+                - goKyoNoWaza
+                - description
+                - youtubeId
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Seoi
+                group:
+                  type: string
+                  example: Nage-Waza
+                subGroup:
+                  type: string
+                  example: Tachi-Waza
+                family:
+                  type: string
+                  example: Te-Waza
+                kyuGoKyoNoWaza:
+                  type: string
+                  example: ikkyo
+                goKyoNoWaza:
+                  type: string
+                  example: ikkyo
+                description:
+                  type: text
+                  example: lorem ipsum
+                youtubeId:
+                  type: string
+                  example: gygughiguyg
+
+      responses:
+        "200":
+          description: Return object with the new technique information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        technique:
+                          type: object
+                          properties:
+                            id:
+                              example: 1
+                              type: integer
+                            user_id:
+                              example: 1
+                              type: integer
+                            name:
+                              example: Seoi
+                              type: string
+                            group:
+                              example: Nage-Waza
+                              type: string
+                            subGroup:
+                              example: Tachi-Waza
+                              type: string
+                            family:
+                              example: Te-Waza
+                              type: string
+                            kyuGoKyoNoWaza:
+                              example: ikkyo
+                              type: string
+                            goKyoNoWaza:
+                              example: ikkyo
+                              type: string
+                            description:
+                              example: lorem ipsum
+                              type: text
+                            youtubeId:
+                              example: gygughiguyg
+                              type: string
+        "400":
+          description: Missing Data.
+        "409":
+          description: User already exists.
+        "500":
+          description: Internal Setver Error.
+
+  /techniques/{id}:
+    get:
+      tags:
+        - Technique Module
+      summary: Get one technique by ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Technique ID.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Technique.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        technique:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            user_id:
+                              type: integer
+                            name:
+                              type: string
+                            group:
+                              type: string
+                            subgroup:
+                              type: string
+                            family:
+                              type: string
+                            kyuGoKyoNoWaza:
+                              type: string
+                            goKyoNoWaza:
+                              type: string
+                            description:
+                              type: text
+                            youtubeId:
+                              type: string
+        "400":
+          description: Missing parameter.
+        "404":
+          description: Technique not exist.
+        "500":
+          description: Internal Server Error.
+
+    patch:
+      tags:
+        - Technique Module
+      summary: Modify Technique.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Technique ID.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - name
+                - group
+                - subGroup
+                - family
+                - kyuGoKyoNoWaza
+                - goKyoNoWaza
+                - description
+                - youtubeId
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Seoi
+                group:
+                  type: string
+                  example: Nage-Waza
+                subGroup:
+                  type: string
+                  example: Tachi-Waza
+                family:
+                  type: string
+                  example: Te-Waza
+                kyuGoKyoNoWaza:
+                  type: string
+                  example: ikkyo
+                goKyoNoWaza:
+                  type: string
+                  example: ikkyo
+                description:
+                  type: text
+                  example: lorem ipsum
+                youtubeId:
+                  type: string
+                  example: gghhggiii
+      responses:
+        "200":
+          description: Technique updated
+
+    delete:
+      tags:
+        - Technique Module
+      summary: Delete one technique.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Technique ID to delete.
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Technique deleted.
+        "400":
+          description: Missing parameter.
+        "500":
+          description: Internal Server Error.
+
+  /techniques/trash/{id}:
+    delete:
+      tags:
+        - Technique Module
+      summary: Trash one technique.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Technique ID trash.
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Technique trashed.
+        "400":
+          description: Missing parameter.
+        "500":
+          description: Internal Server Error.
+
+  /techniques/untrash/{id}:
+    post:
+      tags:
+        - Technique Module
+      summary: Untrash one technique.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Technique ID to untrash.
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Technique untrashed.
+        "400":
+          description: Missing parameter.
+        "500":
+          description: Internal Server Error.
