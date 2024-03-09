@@ -1,11 +1,11 @@
 openapi: 3.0.0
 info:
-  title: API sur les techniques de Judo
+  title: API on Judo Techniques
   version: 1.0.0
 
 servers:
   - url: http://localhost:8888
-    description: localhost server
+    description: Localhost server
 
 components:
   securitySchemes:
@@ -13,15 +13,78 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        lastName:
+          type: string
+          example: Dupont
+        firstName:
+          type: string
+          example: Martin
+        pseudo:
+          type: string
+          example: Kéké
+        email:
+          type: string
+          example: martin@dupont.com
+          format: email
+          description: User email address.
+        password:
+          type: string
+          example: martin
+          format: password
+          description: User password
+
+    Technique:
+      type: object
+      properties:
+        id:
+          example: 1
+          type: integer
+        user_id:
+          example: 1
+          type: integer
+        name:
+          example: Seoi
+          type: string
+        group:
+          example: Nage-Waza
+          type: string
+        subGroup:
+          example: Tachi-Waza
+          type: string
+        family:
+          example: Te-Waza
+          type: string
+        kyuGoKyoNoWaza:
+          example: ikkyo
+          type: string
+        goKyoNoWaza:
+          example: ikkyo
+          type: string
+        description:
+          example: lorem ipsum
+          type: string
+        youtubeId:
+          example: gygughiguyg
+          type: string
 security:
   - bearerAuth: []
 
 paths:
+  # **********************
+  # *** Authentification *
+  # **********************
   /auth/login:
     post:
       tags:
         - Auth Module
-      summary: Log In the user.
+      summary: Log in the user.
       requestBody:
         required: true
         content:
@@ -54,14 +117,17 @@ paths:
         "400":
           description: Bad email or password.
         "401":
-          description: Not Authorised.
+          description: Not authorized.
         "500":
           description: Internal Server Error.
+  # ***********
+  # *** Users *
+  # ***********
   /users:
     get:
       tags:
         - User Module
-      summary: Get all users from BDD.
+      summary: Get all users from the database.
       security:
         - bearerAuth: []
       responses:
@@ -75,29 +141,13 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        user:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                            lastName:
-                              type: string
-                            firstName:
-                              type: string
-                            pseudo:
-                              type: string
-                            email:
-                              type: string
-                            password:
-                              type: string
+                      $ref: "#/components/schemas/User"
         "500":
           description: Internal Error.
     put:
       tags:
         - User Module
-      summary: Create new user in BDD.
+      summary: Create a new user in the database.
       security:
         - bearerAuth: []
       requestBody:
@@ -134,7 +184,7 @@ paths:
                   description: User password.
       responses:
         "200":
-          description: Return object with the new user informations.
+          description: Return object with the new user information.
           content:
             application/json:
               schema:
@@ -143,29 +193,7 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        user:
-                          type: object
-                          properties:
-                            id:
-                              example: 1
-                              type: integer
-                            lastName:
-                              example: Dupont
-                              type: string
-                            firstName:
-                              example: Martin
-                              type: string
-                            pseudo:
-                              example: kéké
-                              type: string
-                            email:
-                              example: martin@dupont.com
-                              type: string
-                            password:
-                              example: $2y$10$fCx3TihgTRhT.vqw/u9qDuHJr8w2KEe.YHgitZ7aV5vLoChqiTaYK
-                              type: string
+                      $ref: "#/components/schemas/User"
         "400":
           description: Missing Data.
         "409":
@@ -198,29 +226,13 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        user:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                              lastName:
-                                type: string
-                                firstName:
-                                  type: string
-                                  pseudo:
-                                    type: string
-                                    email:
-                                      type: string
-                                      password:
-                                        type: string
+                      $ref: "#/components/schemas/User"
         "400":
           description: Missing parameter.
         "404":
-          description: User not exist.
+          description: User does not exist.
         "500":
-          description: Internal Server Error
+          description: Internal Server Error.
 
     patch:
       tags:
@@ -261,12 +273,12 @@ paths:
                   type: string
                   example: martin@dupont.com
                   format: email
-                  description: Adresse email de l'utilisateur.
+                  description: User email address.
                 password:
                   type: string
                   example: martin
                   format: password
-                  description: Mot de passe de l'utilisateur.
+                  description: User password.
       responses:
         "200":
           description: User updated.
@@ -296,6 +308,7 @@ paths:
     delete:
       tags:
         - User Module
+      summary: Trash one user.
       security:
         - bearerAuth: []
       parameters:
@@ -331,15 +344,18 @@ paths:
         "204":
           description: User untrashed.
         "400":
-          descrition: Missing parameter
+          description: Missing parameter
         "500":
           description: Internal Server Error.
 
+  #****************
+  #*** Techniques *
+  #****************
   /techniques:
     get:
       tags:
         - Technique Module
-      summary: Get all techniques from BDD.
+      summary: Get all techniques from the database.
       responses:
         "200":
           description: Return an array of all techniques.
@@ -351,38 +367,14 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        technique:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                            user_id:
-                              type: integer
-                            name:
-                              type: string
-                            group:
-                              type: string
-                            subgroup:
-                              type: string
-                            family:
-                              type: string
-                            kyuGoKyoNoWaza:
-                              type: string
-                            goKyoNoWaza:
-                              type: string
-                            description:
-                              type: text
-                            youtubeId:
-                              type: string
+                      $ref: "#/components/schemas/Technique"
         "500":
           description: Internal Server Error.
 
     put:
       tags:
         - Technique Module
-      summary: Create new technique in BDD.
+      summary: Create new technique in the database.
       security:
         - bearerAuth: []
       requestBody:
@@ -424,7 +416,7 @@ paths:
                   type: string
                   example: ikkyo
                 description:
-                  type: text
+                  type: string
                   example: lorem ipsum
                 youtubeId:
                   type: string
@@ -441,47 +433,13 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        technique:
-                          type: object
-                          properties:
-                            id:
-                              example: 1
-                              type: integer
-                            user_id:
-                              example: 1
-                              type: integer
-                            name:
-                              example: Seoi
-                              type: string
-                            group:
-                              example: Nage-Waza
-                              type: string
-                            subGroup:
-                              example: Tachi-Waza
-                              type: string
-                            family:
-                              example: Te-Waza
-                              type: string
-                            kyuGoKyoNoWaza:
-                              example: ikkyo
-                              type: string
-                            goKyoNoWaza:
-                              example: ikkyo
-                              type: string
-                            description:
-                              example: lorem ipsum
-                              type: text
-                            youtubeId:
-                              example: gygughiguyg
-                              type: string
+                      $ref: "#/components/schemas/Technique"
         "400":
           description: Missing Data.
         "409":
           description: User already exists.
         "500":
-          description: Internal Setver Error.
+          description: Internal Server Error.
 
   /techniques/{id}:
     get:
@@ -528,13 +486,13 @@ paths:
                             goKyoNoWaza:
                               type: string
                             description:
-                              type: text
+                              type: string
                             youtubeId:
                               type: string
         "400":
           description: Missing parameter.
         "404":
-          description: Technique not exist.
+          description: Technique does not exist.
         "500":
           description: Internal Server Error.
 
@@ -590,7 +548,7 @@ paths:
                   type: string
                   example: ikkyo
                 description:
-                  type: text
+                  type: string
                   example: lorem ipsum
                 youtubeId:
                   type: string
