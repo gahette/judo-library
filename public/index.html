@@ -3,51 +3,39 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="./css/style.css" rel="stylesheet" type="text/css" />
-        <title>Judo-Library</title>
+        <title>Judo Techniques API</title>
     </head>
     <body>
-        <h1 class="title">Bienvenue sur l'API judo-library</h1>
+        <h1 class="title">Welcome to the Judo Techniques API</h1>
 
         <p class="about">
-            Cette API prend en charge deux endpoints comme les
-            <strong>utilisateurs</strong>
-            capables de modifier les données de l'API et les
-            <strong>techniques</strong> de Judo.
+            This API provides endpoints to manage users and techniques.
         </p>
-
-        <div class="main">
-            <div>
-                <h2>Documentation</h2>
-                <p>
-                    Pour une documentation détaillée, veuillez consulter
-                    <a href="/api-docs">/api-docs</a>.
-                </p>
-                <h2>Instructions d'utilisations :</h2>
-                <h3>Pour les utilisateurs</h3>
-                <ul>
-                    <li>GET /users: Get all users</li>
-                    <li>PUT /users: Create a new user</li>
-                    <li>GET /users/{id}: Get one user by ID</li>
-                    <li>PATCH /users/{id}: Modify user</li>
-                    <li>DELETE /users: Delete one user</li>
-                    <li>DELETE /users/trash/{id}: Trash one user</li>
-                    <li>POST /users/untrash/{id}: Untrash one user</li>
-                </ul>
-                <h3>Pour les techniques</h3>
-                <ul>
-                    <li>GET /techniques: Get all techniques</li>
-                    <li>PUT /techniques: Create a new technique</li>
-                    <li>GET /techniques/{id}: Get one technique</li>
-                    <li>PATCH /techniques/{id}: Modify technique</li>
-                    <li>DELETE /techniques: Delete one technique</li>
-                    <li>DELETE /techniques/trash/{id}: Trash one technique</li>
-                    <li>
-                        POST /techniques/untrash/{id}: Untrash one technique
-                    </li>
-                </ul>
-            </div>
-            <img src="./assets/codemoraljudo.jpeg" alt="code moral du judo" />
-        </div>
+        <h2>Documentation</h2>
+        <p>
+            For detailed documentation, please visit
+            <a href="/api-docs">/api-docs</a>.
+        </p>
+        <h2>Usage Instructions:</h2>
+        <h3>For Users</h3>
+        <ul>
+            <li>GET /users: Get all users</li>
+            <li>PUT /users: Create a new user</li>
+            <li>GET /users/{id}: Get one user by ID</li>
+            <li>PATCH /users/{id}: Modify user</li>
+            <li>DELETE /users: Delete one user</li>
+            <li>DELETE /users/trash/{id}: Trash one user</li>
+            <li>POST /users/untrash/{id}: Untrash one user</li>
+        </ul>
+        <h3>For Techniques</h3>
+        <ul>
+            <li>GET /techniques: Get all techniques</li>
+            <li>PUT /techniques: Create a new technique</li>
+            <li>GET /techniques/{id}: Get one technique</li>
+            <li>PATCH /techniques/{id}: Modify technique</li>
+            <li>DELETE /techniques: Delete one technique</li>
+            <li>DELETE /techniques/trash/{id}: Trash one technique</li>
+            <li>POST /techniques/untrash/{id}: Untrash one technique</li>
+        </ul>
     </body>
 </html>
