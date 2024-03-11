@@ -71,7 +71,7 @@ app.use(errorHandler);
 /********************************/
 /*** Start serveur avec test DB */
 /********************************/
-const PORT = process.env.SERVER_PORT || 3000;
+const PORT = process.env.PORT || 8888;
 DB.authenticate()
   .then(() => console.log("Database connection OK"))
   .then(() => {
