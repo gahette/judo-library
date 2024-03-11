@@ -6,6 +6,8 @@ info:
 servers:
   - url: http://localhost:8888
     description: Localhost server
+  - url: https://api-judo-ffa50b594cb1.herokuapp.com/
+    description: heroku server
 
 components:
   securitySchemes:
