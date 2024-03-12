@@ -2,10 +2,10 @@
 /*** Import des modules nécessaires */
 /************************************/
 const jwt = require('jsonwebtoken')
-const {decode} = require("jsonwebtoken");
 
-/****************/
+/*************************/
 /*** Extraction du token */
+/*************************/
 const extractBearer = authorization => {
     if (typeof authorization !== 'string') {
         return false
@@ -17,8 +17,9 @@ const extractBearer = authorization => {
     return matches && matches[2]
 }
 
-/****************/
+/******************************************/
 /*** Vérification de la présence du token */
+/******************************************/
 const checkTokenMiddleware = (req, res, next) => {
 
     const token = req.headers.authorization && extractBearer(req.headers.authorization)
