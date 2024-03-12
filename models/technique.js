@@ -1,61 +1,65 @@
 /****************/
 /*** Import des modules nécessaires */
-const {DataTypes} = require('sequelize')
-const DB = require('../db.config')
+const { DataTypes } = require("sequelize");
+const DB = require("../db.config");
 
 /****************/
 /*** Définition du modèle User */
-const Technique = DB.define('Technique', {
+const Technique = DB.define(
+  "Technique",
+  {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
     user_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     name: {
-        type: DataTypes.STRING,
-        defaultValue: '',
-        allowNull: false
+      type: DataTypes.STRING,
+      defaultValue: "",
+      allowNull: false,
     },
     group: {
-        type: DataTypes.STRING,
-        defaultValue: '',
-        allowNull: false
+      type: DataTypes.STRING,
+      defaultValue: "",
+      allowNull: false,
     },
     subGroup: {
-        type: DataTypes.STRING,
-        defaultValue: '',
-        allowNull: true
+      type: DataTypes.STRING,
+      defaultValue: "",
+      allowNull: true,
     },
     family: {
-        type: DataTypes.STRING,
-        defaultValue: '',
-        allowNull: false
+      type: DataTypes.STRING,
+      defaultValue: "",
+      allowNull: false,
     },
     kyuGoKyoNoWaza: {
-        type: DataTypes.STRING,
-        defaultValue: '',
-        allowNull: true
+      type: DataTypes.STRING,
+      defaultValue: "",
+      allowNull: true,
     },
     goKyoNoWaza: {
-        type: DataTypes.STRING,
-        defaultValue: '',
-        allowNull: true
+      type: DataTypes.STRING,
+      defaultValue: "",
+      allowNull: true,
     },
     description: {
-        type: DataTypes.TEXT,
-        defaultValue: '',
-        allowNull: true
+      type: DataTypes.TEXT,
+      defaultValue: "",
+      allowNull: true,
     },
     youtubeId: {
-        type: DataTypes.STRING,
-        defaultValue: '',
-        allowNull: true
-    }
-}, {paranoid: true})              // Ici pour faire du softDelete
+      type: DataTypes.STRING,
+      defaultValue: "",
+      allowNull: true,
+    },
+  },
+  { paranoid: true },
+); // Ici pour faire du softDelete
 
 /****************/
 /*** Synchronisation du modèle */
@@ -63,4 +67,4 @@ const Technique = DB.define('Technique', {
 // Technique.sync({force: true})
 // Technique.sync({alter: true})
 
-module.exports = Technique
+module.exports = Technique;

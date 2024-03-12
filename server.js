@@ -71,14 +71,11 @@ app.use(errorHandler);
 /********************************/
 /*** Start serveur avec test DB */
 /********************************/
-const PORT = process.env.PORT || 8888;
 DB.authenticate()
   .then(() => console.log("Database connection OK"))
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(
-        `This server is running on port ${process.env.SERVER_PORT}. Have fun !`,
-      );
+    app.listen(process.env.PORT || 8888, () => {
+      console.log(`This server is running. Have fun !`);
     });
   })
   .catch((err) => console.log("Database Error", err));
