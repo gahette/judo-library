@@ -45,7 +45,6 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_DURING },
     );
-    console.log(process.JWT_SECRET);
     return res.json({ access_token: token });
   } catch (err) {
     next(err);
