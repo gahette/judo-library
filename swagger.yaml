@@ -5,7 +5,7 @@ info:
 
 servers:
   - url: https://judo-library.vercel.app/
-    description: heroku server
+    description: vercel server
   - url: http://localhost:8888
     description: Localhost server
 
