@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://judo-library.vercel.app/
+  - url: https://judo-library.vercel.app
     description: vercel server
   - url: http://localhost:8888
     description: Localhost server
