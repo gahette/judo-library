@@ -1,12 +1,15 @@
-/****************/
+/************************************/
 /*** Import des modules nécessaires */
+/************************************/
+
 const { DataTypes } = require("sequelize");
 const DB = require("../db.config");
 
-/****************/
+/*******************************/
 /*** Définition du modèle User */
+/*******************************/
 const Technique = DB.define(
-  "Technique",
+  'Technique',
   {
     id: {
       type: DataTypes.INTEGER,
