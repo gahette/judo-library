@@ -5,7 +5,7 @@ info:
 
 servers:
   - url:  https://judo-library.onrender.com
-    description: vercel server
+    description: render server
 #  - url: http://localhost:8888
 #    description: Localhost server
 
